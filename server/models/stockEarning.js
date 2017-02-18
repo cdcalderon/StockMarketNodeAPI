@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 
 var StockEarning= mongoose.model('StockEarning', {
-  symbol: {
+  symbol: { 
     type: String,
-    require: true,
+    required: true,
     minlength: 1,
     trim: true
   },
