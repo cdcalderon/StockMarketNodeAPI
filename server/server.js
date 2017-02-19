@@ -20,6 +20,14 @@ app.post('/earnings', (req, res) => {
   });
 });
 
+app.get('/earnings', (req, res) => {
+  StockEarning.find().then((earnings) => {
+    res.send({earnings});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
 app.listen(3000, () => {
   console.log('Started on port 3000...')
 });

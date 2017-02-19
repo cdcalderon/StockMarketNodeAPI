@@ -4,8 +4,16 @@ const request = require('supertest');
 const { app } = require('./../server');
 const { StockEarning } = require('./../models/stockEarning');
 
+const earnings = [{
+   symbol:'COST'
+  }, {
+   symbol:'AAPL'
+  }];
+
 beforeEach((done) => {
-  StockEarning.remove({}).then(() => done());
+  StockEarning.remove({}).then(() => {
+    StockEarning.insertMany(earnings);
+  }).then(() => done());
 });
 
 describe('POST /earnings', ()=> {
@@ -24,7 +32,7 @@ describe('POST /earnings', ()=> {
           return done(err);
         }
 
-        StockEarning.find().then((earnings) => {
+        StockEarning.find({symbol}).then((earnings) => {
           expect(earnings.length).toBe(1);
           expect(earnings[0].symbol).toBe(symbol);
           done();
@@ -43,9 +51,21 @@ describe('POST /earnings', ()=> {
         }
 
         StockEarning.find().then((earnings) => {
-          expect(earnings.length).toBe(0);
+          expect(earnings.length).toBe(2);
           done();
         }).catch((e) => done(e));
       });
+  });
+});
+
+describe('GET /earnings', ()=> {
+  it('should get all earnings', (done) => {
+    request(app)
+      .get('/earnings')
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.earnings.length).toBe(2);
+      })
+      .end(done);
   });
 });
