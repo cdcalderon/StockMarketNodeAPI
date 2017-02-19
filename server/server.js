@@ -34,12 +34,12 @@ app.get('/earnings/:id', (req, res) => {
   var id = req.params.id;
 
   if(!ObjectID.isValid(id)) {
-    return res.status(400).send();
+    return res.status(404).send();
   }
 
   StockEarning.findById(id).then((earning) => {
     if(!earning) {
-      return res.status(400).send();
+      return res.status(404).send();
     }
 
     res.send({earning});

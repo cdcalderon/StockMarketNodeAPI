@@ -1,12 +1,15 @@
 const expect = require('expect');
 const request = require('supertest');
+const { ObjectID } = require('mongodb');
 
 const { app } = require('./../server');
 const { StockEarning } = require('./../models/stockEarning');
 
 const earnings = [{
+   _id: new ObjectID(),
    symbol:'COST'
   }, {
+   _id: new ObjectID(), 
    symbol:'AAPL'
   }];
 
@@ -69,3 +72,32 @@ describe('GET /earnings', ()=> {
       .end(done);
   });
 });
+
+describe('GET /earnings/:id', () => {
+  it('should return earning doc', (done) => {
+    request(app)
+      .get(`/earnings/${earnings[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.earning.symbol).toBe(earnings[0].symbol);
+      })
+      .end(done);
+  });
+
+  it('should return 404 if earning not found', (done) => {
+    // make sure you get a 404 back
+    var hexId = new ObjectID().toHexString();
+
+    request(app)
+      .get(`/earnings/${hexId}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', (done) => {
+    request(app)
+      .get(`/earnings/1234fd`)
+      .expect(404)
+      .end(done);
+  });
+})
