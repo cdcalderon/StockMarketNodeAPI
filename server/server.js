@@ -1,5 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var { ObjectID } = require('mongodb'); 
+
 
 var { mongoose } = require('./db/mongoose');
 var { StockEarning } = require('./models/stockEarning');
@@ -27,6 +29,24 @@ app.get('/earnings', (req, res) => {
     res.status(400).send(e);
   });
 });
+
+app.get('/earnings/:id', (req, res) => {
+  var id = req.params.id;
+
+  if(!ObjectID.isValid(id)) {
+    return res.status(400).send();
+  }
+
+  StockEarning.findById(id).then((earning) => {
+    if(!earning) {
+      return res.status(400).send();
+    }
+
+    res.send({earning});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+})
 
 app.listen(3000, () => {
   console.log('Started on port 3000...')
