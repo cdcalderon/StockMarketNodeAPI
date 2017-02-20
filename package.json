@@ -4,12 +4,16 @@
   "description": "",
   "main": "server/server.js",
   "scripts": {
+    "start": "node server/server.js",
     "test": "mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'",
-    "start": "npm-run-all --parallel open:src lint:watch",
+    "startlocal": "npm-run-all --parallel open:src lint:watch",
     "open:src": "node server/server.js",
     "lint": "esw playground --color",
     "lint:watch": "npm run lint -- --watch"
+  },
+  "engines": {
+    "node": "6.9.4"
   },
   "author": "",
   "license": "ISC",
