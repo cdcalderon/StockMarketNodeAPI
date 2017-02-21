@@ -1,8 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var { ObjectID } = require('mongodb'); 
+var earningJobs = require('./services/earnings.jobs');
 
-
+earningJobs.populateEarnings('2/17/2017', '1/1/2018');
 var { mongoose } = require('./db/mongoose');
 var { StockEarning } = require('./models/stockEarning');
 
