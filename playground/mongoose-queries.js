@@ -10,7 +10,7 @@ if(!ObjectID.isValid(id)) {
 }
 
 StockEarning.find({
-  _id: id
+  symbol: "AAPL"
 }).then((earnings) => {
   console.log('Earnings', earnings);
 });

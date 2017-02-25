@@ -7,19 +7,42 @@ var dateString2 = '2017-03-15';
 var earningUrl = 'https://www.bloomberg.com/markets/api/calendar/earnings/US?locale=en&date=';
 
 var populateEarnings = (startDateString, endDateString) => {
+  
+
   let i = 0;
     let datesArray = getDatesArray(startDateString, endDateString);
 
-    schedule.scheduleJob('*/1 * * * *', function(){
+    schedule.scheduleJob('*/5 * * * *', function(){
       getEarningInformation(datesArray[i++]).then((response) => {
          let dateString = response.config.dateString;
           if(response.status === 200) {
             if(response.data.events == null){
               throw new Error('Unable to find records');
             }
-      
+
             for(event of response.data.events) {
-              console.log(`${dateString + event.company.ticker.split(':')}`);
+              let symbol = event.company.ticker.split(':')[0];
+
+              StockEarning.find({
+                symbol:symbol, 
+                reportDateStr: response.config.dateString
+              }).then((earnings) => {
+                if (!earnings.length) {
+                    console.log('Dont exits, so i can add it');
+                        var stockEarning = new StockEarning({
+                        symbol: symbol,
+                        reportDateStr: response.config.dateString
+                        });
+
+                      stockEarning.save().then((doc) => {
+                        console.log('success saving.. : ', doc);
+                      }, (e) => {
+                        console.log('error saving.. : ', e);
+                      }); 
+                } else {
+                  console.log('exits, so i cant add it');
+                }
+              });
             }
           }
        }).catch((e) => {
