@@ -8,8 +8,8 @@ const {
 const axios = require('axios');
 
 var dateString2 = '2017-03-15';
-var earningUrl = 'https://www.bloomberg.com/markets/api/calendar/earnings/US?locale=en&date=';
-
+//const earningUrl = 'https://www.bloomberg.com/markets/api/calendar/earnings/US?locale=en&date=';
+const earningUrl = 'https://www.tipranks.com/api/earnings/getByDate/?name='
 var populateEarnings = (startDateString, endDateString) => {
     let i = 0;
     let datesArray = getDatesArray(startDateString, endDateString);
@@ -18,12 +18,16 @@ var populateEarnings = (startDateString, endDateString) => {
         getEarningInformation(datesArray[i++]).then((response) => {
             let dateString = response.config.dateString;
             if (response.status === 200) {
-                if (response.data.events == null) {
+                // if (response.data.events == null) {
+                //     throw new Error('Unable to find records');
+                // }
+                if (response.data == null) {
                     throw new Error('Unable to find records');
                 }
 
-                for (event of response.data.events) {
-                    let symbol = event.company.ticker.split(':')[0];
+                for (event of response.data) {
+                    //let symbol = event.company.ticker.split(':')[0];
+                    let symbol = event.ticker;
 
                     StockEarning.find({
                         symbol: symbol,
