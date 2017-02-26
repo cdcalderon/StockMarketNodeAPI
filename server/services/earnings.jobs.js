@@ -14,7 +14,7 @@ var populateEarnings = (startDateString, endDateString) => {
     let i = 0;
     let datesArray = getDatesArray(startDateString, endDateString);
 
-    schedule.scheduleJob('*/5 * * * *', function() {
+    schedule.scheduleJob('*/1 * * * *', function() {
         getEarningInformation(datesArray[i++]).then((response) => {
             let dateString = response.config.dateString;
             if (response.status === 200) {
