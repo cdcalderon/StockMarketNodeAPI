@@ -33,7 +33,7 @@ var populateEarnings = (startDateString, endDateString) => {
                         symbol: symbol,
                         reportDateStr: response.config.dateString
                     }).then((earnings) => {
-                        insertEarning(earnings, symbol, dateString);
+                        insertEarning(earnings, event, symbol, dateString);
                     });
                 }
             }
@@ -68,13 +68,10 @@ var getDatesArray = (startDateString, endDateString) => {
     return datesArray;
 }
 
-var insertEarning = (earnings, symbol, dateString) => {
+var insertEarning = (earnings, event, symbol, dateString) => {
     if (!earnings.length) {
         console.log('Dont exits, so i can add it');
-        var stockEarning = new StockEarning({
-            symbol: symbol,
-            reportDateStr: dateString
-        });
+        var stockEarning = createStockEarning(event, symbol, dateString)
 
         stockEarning.save().then((doc) => {
             console.log('success saving.. : ', doc);
@@ -84,6 +81,34 @@ var insertEarning = (earnings, symbol, dateString) => {
     } else {
         console.log('exits, so i can not add it');
     }
+}
+
+var createStockEarning = (event, symbol, dateString) => {
+    return new StockEarning({
+            symbol,
+            reportDateStr: dateString,
+            reportTimeStr: event.timeOfDay === 1 ? 'bmo' : 
+                           event.timeOfDay === 2 ? 'amc' : null,
+            periodEnding: event.periodEnding,
+            eps: event.eps,
+            reportedEPS: event.reportedEPS,
+            consensus: event.consensus,
+            bpConsensus: event.bpConsensus,
+            ratingPriceTarget: event.ratingsAndPT.priceTarget,
+            ratingNumBuys: event.ratingsAndPT.numBuys,
+            ratingNumHolds: event.ratingsAndPT.numHolds,
+            ratingNumSells: event.ratingsAndPT.numSells,
+            bpRatingPriceTarget: event.bpRatingsAndPT.priceTarget,
+            bpRatingNumBuys: event.bpRatingsAndPT.numBuys,
+            bpRatingNumHolds: event.bpRatingsAndPT.numHolds,
+            bpRatingNumSells: event.bpRatingsAndPT.numSells,
+            marketCap: event.marketCap,
+            sector: event.sector,
+            surprise: event.surprise,
+            timeOfDay: event.timeOfDay,
+            isConfirmed: event.isConfirmed
+
+        });
 }
 
 module.exports.populateEarnings = populateEarnings;

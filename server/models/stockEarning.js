@@ -14,9 +14,6 @@ var StockEarning = mongoose.model('StockEarning', {
     reportTimeStr: {
         type: String
     },
-    confCallStr: {
-        type: String
-    },
     periodEnding: {
         type: String
     },
