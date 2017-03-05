@@ -1,14 +1,16 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var earningJobs = require('./services/earnings.jobs');
+var cors = require('cors');
 
 earningJobs.populateEarnings('3/16/2017', '1/1/2018');
 var { mongoose } = require('./db/mongoose');
 var { StockEarning } = require('./models/stockEarning');
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/earnings', (req, res) => {
@@ -25,7 +27,7 @@ app.post('/earnings', (req, res) => {
 
 app.get('/earnings', (req, res) => {
   StockEarning.find().then((earnings) => {
-    res.send({earnings});
+    res.send(earnings);
   }, (e) => {
     res.status(400).send(e);
   });
